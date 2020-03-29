@@ -28,8 +28,8 @@ class Game(SceneBase):
 
         self.prices = {
             "new miner": 50,
-            "increase miner speed": 1000,
-            "upgrade player pickaxe": 25
+            "upgrade player pickaxe": 25,
+            "increase miner speed": 1000
         }
 
         self.gold = 50000
@@ -129,8 +129,8 @@ class Game(SceneBase):
         )
 
         counter = 1
-        for key, value in self.prices.items():
-            text = f"{counter}. {key}: {value} gold"
+        for item, price in self.prices.items():
+            text = f"{counter}. {item}: {price} gold"
             place = (SCREEN_WIDTH // 2, (SCREEN_HEIGHT // 2) + counter * 25)
             write(screen, text, place, 24)
             counter += 1
