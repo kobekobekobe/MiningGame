@@ -1,67 +1,10 @@
 from random import randint
+
 import pygame
 
-
-class SceneBase:
-    def __init__(self):
-        self.next = self
-
-    def ProcessInput(self, events, pressed_keys):
-        print("uh-oh, you didn't override this in the child class")
-
-    def Update(self):
-        print("uh-oh, you didn't override this in the child class")
-
-    def Render(self, screen):
-        print("uh-oh, you didn't override this in the child class")
-
-    def SwitchToScene(self, next_scene):
-        self.next = next_scene
-
-    def Terminate(self):
-        self.SwitchToScene(None)
+from boilerplate import SceneBase, run_game
 
 
-def run_game(width, height, fps, starting_scene):
-    pygame.init()
-    screen = pygame.display.set_mode((width, height))
-    clock = pygame.time.Clock()
-
-    active_scene = starting_scene
-
-    while active_scene != None:
-        pressed_keys = pygame.key.get_pressed()
-
-        # Event filtering
-        filtered_events = []
-        for event in pygame.event.get():
-            quit_attempt = False
-            if event.type == pygame.QUIT:
-                quit_attempt = True
-            elif event.type == pygame.KEYDOWN:
-                alt_pressed = pressed_keys[pygame.K_LALT] or \
-                    pressed_keys[pygame.K_RALT]
-                if event.key == pygame.K_ESCAPE:
-                    quit_attempt = True
-                elif event.key == pygame.K_F4 and alt_pressed:
-                    quit_attempt = True
-
-            if quit_attempt:
-                active_scene.Terminate()
-            else:
-                filtered_events.append(event)
-
-        active_scene.ProcessInput(filtered_events, pressed_keys)
-        active_scene.Update()
-        active_scene.Render(screen)
-
-        active_scene = active_scene.next
-
-        pygame.display.flip()
-        clock.tick(fps)
-
-
-# The rest is code where you implement your game using the Scenes model
 class Timer:
     def __init__(self, starting_time, on_finish, restart=False):
         self.starting_time = starting_time
@@ -108,7 +51,7 @@ class Game(SceneBase):
         self.miner_anim_one_time = 15
         self.is_digging = False
 
-        self.rock_image = pygame.image.load("rock.png")
+        self.rock_image = pygame.image.load("images/rock.png")
         self.rock_image = pygame.transform.scale(self.rock_image, (50, 50))
 
     def ProcessInput(self, events, pressed_keys):
