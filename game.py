@@ -106,20 +106,16 @@ class Game(SceneBase):
             (160, 85)
         )
 
-        if self.is_digging:
-            miner_image = self.miner_images[self.miner_anim]
-            self.miner_anim_one_time -= 1
-        else:
-            miner_image = self.miner_images[0]
-
-        if self.miner_anim_one_time == 0:
-            self.is_digging = False
-            self.miner_anim = 0
-
         screen.blit(
-            miner_image,
+            self.draw_player(),
             (50, -50)
         )
+
+        if self.miners > 0:
+            screen.blit(
+                self.draw_miner(),
+                (150, -25)
+            )
 
         write(
             screen,
@@ -140,6 +136,27 @@ class Game(SceneBase):
             self.gold = self.gold - self.prices[item]
             self.prices[item] += price_change
             effect()
+
+    def draw_miner(self):
+        m = pygame.transform.scale(
+            self.miner_images[self.miner_anim],
+            (175, 175)
+        )
+        m = pygame.transform.flip(m, True, False)
+        return m
+
+    def draw_player(self):
+        if self.is_digging:
+            miner_image = self.miner_images[self.miner_anim]
+            self.miner_anim_one_time -= 1
+        else:
+            miner_image = self.miner_images[0]
+
+        if self.miner_anim_one_time == 0:
+            self.is_digging = False
+            self.miner_anim = 0
+
+        return miner_image
 
 
 def write(screen, message, place, size):
