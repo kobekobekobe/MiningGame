@@ -107,7 +107,7 @@ class Game(SceneBase):
         else:
             self.miner_anim = 0
 
-        if goblin_comes():
+        if goblin_comes(self.gold):
             # Let player choose whether to fight or let the goblin take gold.
             pass
 
