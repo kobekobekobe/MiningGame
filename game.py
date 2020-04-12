@@ -54,14 +54,23 @@ class Game(SceneBase):
         self.rock_image = pygame.image.load("images/rock.png")
         self.rock_image = pygame.transform.scale(self.rock_image, (50, 50))
 
+        self.gold_image = pygame.image.load("images/gold.png")
+        self.gold_showing = False
+
+        self.goblin_image = pygame.image.load("images/goblin.png")
+
     def ProcessInput(self, events, pressed_keys):
         for event in events:
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_w:
                     self.is_digging = True
                     self.miner_anim_one_time = 15
-                    if randint(1, 10) > self.gold_chance - self.player_pickaxe_level:
+
+                    if found_gold(self.gold_chance, self.player_pickaxe_level):
                         self.gold += 1
+                        self.gold_showing = True
+                    else:
+                        self.gold_showing = False
 
                 def add_miner(): self.miners += 1
                 self.buy(
@@ -98,6 +107,10 @@ class Game(SceneBase):
         else:
             self.miner_anim = 0
 
+        if goblin_comes():
+            # Let player choose whether to fight or let the goblin take gold.
+            pass
+
     def Render(self, screen):
         screen.fill((0, 0, 0))
 
@@ -111,11 +124,22 @@ class Game(SceneBase):
             (50, -50)
         )
 
+        if self.gold_showing:
+            screen.blit(
+                self.gold_image,
+                (160, 100)
+            )
+
         if self.miners > 0:
             screen.blit(
                 self.draw_miner(),
                 (150, -25)
             )
+
+        screen.blit(
+            self.goblin_image,
+            (150, 50)
+        )
 
         write(
             screen,
@@ -157,6 +181,14 @@ class Game(SceneBase):
             self.miner_anim = 0
 
         return miner_image
+
+
+def found_gold(chance, pickaxe_level):
+    return randint(1, 10) > chance - pickaxe_level
+
+
+def goblin_comes(player_gold):
+    return randint(1, 10) == 10
 
 
 def write(screen, message, place, size):
